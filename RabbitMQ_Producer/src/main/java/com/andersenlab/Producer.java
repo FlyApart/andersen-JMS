@@ -1,5 +1,6 @@
 package com.andersenlab;
 
+import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.Channel;
@@ -14,8 +15,8 @@ public class Producer {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
         try (Connection connection = factory.newConnection();
-             Channel channel = connection.createChannel()) {
-            channel.queueDeclare(QUEUE, false, false, false, null);
+            Channel channel = connection.createChannel()) {
+            AMQP.Queue.DeclareOk queue = channel.queueDeclare(QUEUE, false, false, false, null);
 
             channel.basicPublish("", QUEUE, null, MESSAGE.getBytes(StandardCharsets.UTF_8));
             System.out.println("Sent: " + MESSAGE);
